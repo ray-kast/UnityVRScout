@@ -618,7 +618,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4827177739548706}
-  m_Layer: 0
+  - component: {fileID: 143671351940843044}
+  - component: {fileID: 114536545458395662}
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2284,6 +2286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256036c9eb07f0498dc6b609806858f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 114536545458395662}
 --- !u!114 &114374980585398778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2597,6 +2600,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: -1
   origin: {fileID: 0}
+--- !u!114 &114536545458395662
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1667351564905002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 408c057fb764aeb439a8f996d0b99ab9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFlySpeed: 10
+  flyDeadband: 0.1
+  flySensitivity: 0.75
 --- !u!114 &114562472714991040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2774,6 +2791,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256036c9eb07f0498dc6b609806858f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 114536545458395662}
 --- !u!114 &114797269705263330
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3025,6 +3043,23 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1331544671543866}
   m_Enabled: 1
+--- !u!143 &143671351940843044
+CharacterController:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1667351564905002}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!222 &222001799997629348
 CanvasRenderer:
   m_ObjectHideFlags: 1

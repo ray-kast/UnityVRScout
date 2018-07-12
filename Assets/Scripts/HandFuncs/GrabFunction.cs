@@ -15,10 +15,12 @@ namespace VRScout.HandFuncs {
 
       touch = ctl.gameObject.AddComponent<VRTK_InteractTouch>();
       grab = ctl.gameObject.AddComponent<VRTK_InteractGrab>();
+
+      grab.controllerEvents = ctl.Events;
+      grab.interactTouch = touch;
     }
 
     public void Disable(IHandController ctl) {
-      // grab.enabled = false;
       GameObject.Destroy(touch);
       GameObject.Destroy(grab);
     }
