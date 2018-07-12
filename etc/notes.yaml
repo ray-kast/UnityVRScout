@@ -1,0 +1,39 @@
+functions:
+- flying:
+  - MOTION:  look
+  - TRIGGER: move
+- orient:
+  - GRIP:    engage
+  - MOTION:  move
+  -          'note: scale and rotate may require both controllers'
+- grab:
+  - GRIP:    engage
+  - MOTION:  move
+- camera:
+  - MOTION:  frame shot
+  - <???>:   adjust settings
+  - TRIGGER: shoot
+  -          'note: have a separate mode for video shooting to avoid problems'
+- pointer:
+  - MOTION:  point
+  - TRIGGER: activate (maybe)
+- measuring tape:
+  - MOTION:  move endpoint
+  - TRIGGER: fix endpoint
+
+tool modes:
+- none:
+  - flying
+  - grab
+- move:
+  - flying
+  - orient
+- camera:
+  - camera
+  - grab
+  - 'note: does it make more sense to allow grab or orient?'
+- pointer:
+  -
+
+other notes:
+- having two cameras open should probably be disallowed, for performance and sanity reasons
