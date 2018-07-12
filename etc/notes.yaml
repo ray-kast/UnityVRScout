@@ -6,6 +6,9 @@ functions:
   - GRIP:    engage
   - MOTION:  move
   -          'note: scale and rotate may require both controllers'
+- teleport:
+  - MOTION:  aim
+  - TRIGGER: teleport
 - grab:
   - GRIP:    engage
   - MOTION:  move
@@ -28,12 +31,16 @@ tool modes:
 - move:
   - flying
   - orient
+- teleport:
+  - teleport
+  - orient
 - camera:
   - camera
   - grab
   - 'note: does it make more sense to allow grab or orient?'
 - pointer:
-  -
+  - pointer
+  - grab
 
 other notes:
 - having two cameras open should probably be disallowed, for performance and sanity reasons

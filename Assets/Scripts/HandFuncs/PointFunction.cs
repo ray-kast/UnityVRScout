@@ -10,8 +10,8 @@ namespace VRScout.HandFuncs {
     public PointFunction() { }
 
     public void Enable(IHandController ctl) {
-      if (point != null) GameObject.DestroyImmediate(point);
-      if (renderer != null) GameObject.DestroyImmediate(renderer);
+      if (point != null) GameObject.Destroy(point);
+      if (renderer != null) GameObject.Destroy(renderer);
 
       point = ctl.gameObject.AddComponent<VRTK_Pointer>();
       renderer = ctl.gameObject.AddComponent<VRTK_StraightPointerRenderer>();
@@ -22,8 +22,9 @@ namespace VRScout.HandFuncs {
     }
 
     public void Disable(IHandController ctl) {
-      GameObject.DestroyImmediate(point);
-      GameObject.DestroyImmediate(renderer);
+      GameObject.Destroy(point.customOrigin.gameObject);
+      GameObject.Destroy(point);
+      GameObject.Destroy(renderer);
     }
   }
 }
