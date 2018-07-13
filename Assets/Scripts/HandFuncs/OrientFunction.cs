@@ -15,7 +15,7 @@ namespace VRScout.HandFuncs {
     IPlayerController player;
     bool grab;
 
-    Vector3 DoubleDiff => (otherEvents.transform.position - events.transform.position).normalized;
+    Vector3 DoubleDiff => otherEvents.transform.position - events.transform.position;
 
     public Dictionary<TooltipButtons, string> Tooltips => tooltips;
 
@@ -63,10 +63,18 @@ namespace VRScout.HandFuncs {
     void FixedUpdate() {
       if (grab) {
         if (otherEvents.gripPressed) {
-          // NB: This is intentionally inverted
-          var quat = Quaternion.FromToRotation(DoubleDiff, lastDoubleDiff);
+          {
+            var fromVec = DoubleDiff;
+            var toVec = lastDoubleDiff;
 
-          player.Controller.transform.rotation = quat * player.Controller.transform.rotation;
+            // for my own sanity and the sanity of those around me
+            if (player.OrientLockY) fromVec.y = toVec.y = 0.0f;
+
+            // NB: This is intentionally inverted
+            var quat = Quaternion.FromToRotation(fromVec, toVec);
+
+            player.Controller.transform.rotation = quat * player.Controller.transform.rotation;
+          }
 
           lastDoubleDiff = DoubleDiff; // Recompute just in case
         }

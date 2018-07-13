@@ -9,5 +9,6 @@ namespace VRScout {
     float MaxFlySpeed { get; }
     float FlyDeadband { get; }
     float FlySensitivity { get; }
+    bool OrientLockY { get; }
   }
 }
