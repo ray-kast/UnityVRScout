@@ -5080,6 +5080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256036c9eb07f0498dc6b609806858f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  other: {fileID: 114787684404645378}
   player: {fileID: 114536545458395662}
 --- !u!114 &114374980585398778
 MonoBehaviour:
@@ -6548,6 +6549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6256036c9eb07f0498dc6b609806858f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  other: {fileID: 114358217317703116}
   player: {fileID: 114536545458395662}
 --- !u!114 &114797269705263330
 MonoBehaviour:

@@ -16,8 +16,11 @@ namespace VRScout {
     IHandMode currMode;
     int currPrimaryMode, currGripMode; // TODO: currGripMode needs to be shared between both hands
 
+    public HandController other;
+
     event Action onFixedUpdate;
 
+    IHandController IHandController.Other => other;
     IPlayerController IHandController.Player => player;
     VRTK_ControllerEvents IHandController.Events => events;
 
@@ -60,6 +63,7 @@ namespace VRScout {
       // TODO: Make this some kind of menu.
       events.TouchpadPressed += (sender, e) => SetToolMode((currPrimaryMode + 1) % primaryModes.Count, currGripMode);
       events.ButtonOnePressed += (sender, e) => SetToolMode(currPrimaryMode, (currGripMode + 1) % gripModes.Count);
+      events.ButtonTwoPressed += (sender, e) => SetToolMode(currPrimaryMode, (currGripMode + 1) % gripModes.Count);
 
       SetToolMode(currPrimaryMode, currGripMode);
     }
