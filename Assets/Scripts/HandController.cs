@@ -9,10 +9,11 @@ namespace VRScout {
   [RequireComponent(typeof(VRTK_ControllerEvents))]
   public class HandController : MonoBehaviour, IHandController, IHandModeManager {
     Dictionary<Type, IHandFunction> funcs;
-    List<HandMode> modes;
+    List<SimpleHandMode> primaryModes, gripModes;
     HashSet<IHandFunction> activeFuncs;
     VRTK_ControllerEvents events;
-    int currMode; // TODO: This is temporary
+    IHandMode currMode;
+    int currPrimaryMode, currGripMode; // TODO: currGripMode needs to be shared between both hands
 
     event Action onFixedUpdate;
 
@@ -31,24 +32,32 @@ namespace VRScout {
       funcs = new Dictionary<Type, IHandFunction> {
         [typeof(FlyFunction)] = new FlyFunction(),
         [typeof(GrabFunction)] = new GrabFunction(),
+        [typeof(OrientFunction)] = new OrientFunction(),
         [typeof(PointFunction)] = new PointFunction(),
       };
 
-      // TODO: This should probably be static.
-      modes = new List<HandMode> {
-        new HandMode("Fly", new[] { typeof(FlyFunction) }),
-        new HandMode("Hand", new[] { typeof(GrabFunction), }),
-        new HandMode("Pointer", new[] { typeof(GrabFunction), typeof(PointFunction) }),
+      // TODO: These both should probably be static.
+      primaryModes = new List<SimpleHandMode> {
+        new SimpleHandMode("None", new Type[0]),
+        new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
+        new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
+      };
+
+      gripModes = new List<SimpleHandMode> {
+        new SimpleHandMode("Grab", new[] { typeof(GrabFunction), }),
+        new SimpleHandMode("Orient", new[] { typeof(OrientFunction) }),
       };
 
       activeFuncs = new HashSet<IHandFunction>();
       events = GetComponent<VRTK_ControllerEvents>();
-      currMode = 0;
+      currMode = null;
+      currPrimaryMode = currGripMode = 0;
 
       // TODO: Make this some kind of menu.
-      events.TouchpadPressed += (sender, e) => SetMode((currMode + 1) % modes.Count);
+      events.TouchpadPressed += (sender, e) => SetToolMode((currPrimaryMode + 1) % primaryModes.Count, currGripMode);
+      events.ButtonOnePressed += (sender, e) => SetToolMode(currPrimaryMode, (currGripMode + 1) % gripModes.Count);
 
-      modes[currMode].Enable(this);
+      SetToolMode(currPrimaryMode, currGripMode);
     }
 
     void FixedUpdate() => onFixedUpdate?.Invoke();
@@ -61,9 +70,16 @@ namespace VRScout {
       if (activeFuncs.Remove(funcs[func])) funcs[func].Disable(this);
     }
 
-    void SetMode(int index) {
-      modes[currMode].Disable(this);
-      modes[currMode = index].Enable(this);
+    void SetMode(IHandMode mode) {
+      currMode?.Disable(this);
+      currMode = mode;
+      currMode.Enable(this);
     }
+
+    void SetToolMode(int primary, int grip)
+      => SetMode(new CompoundHandMode(new IHandMode[] {
+        primaryModes[currPrimaryMode = primary],
+        gripModes[currGripMode = grip],
+      }));
   }
 }
