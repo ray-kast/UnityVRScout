@@ -2,10 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
+using TooltipButtons = VRTK.VRTK_ControllerTooltips.TooltipButtons;
+
 namespace VRScout.HandFuncs {
   public class PointFunction : IHandFunction {
+    static readonly Dictionary<TooltipButtons, string> tooltips = new Dictionary<TooltipButtons, string> {
+      [TooltipButtons.TriggerTooltip] = "Pointer",
+    };
+
     VRTK_Pointer point;
     VRTK_StraightPointerRenderer renderer;
+
+    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
 
     public PointFunction() { }
 

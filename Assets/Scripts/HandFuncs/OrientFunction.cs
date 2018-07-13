@@ -2,12 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
+using TooltipButtons = VRTK.VRTK_ControllerTooltips.TooltipButtons;
+
 namespace VRScout.HandFuncs {
   public class OrientFunction : IHandFunction {
+    static readonly Dictionary<TooltipButtons, string> tooltips = new Dictionary<TooltipButtons, string> {
+      [TooltipButtons.GripTooltip] = "Move",
+    };
+
     Vector3 lastPos;
     VRTK_ControllerEvents events;
     IPlayerController player;
     bool grab = false;
+
+    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
 
     public OrientFunction() { }
 
