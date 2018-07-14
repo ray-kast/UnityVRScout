@@ -10,5 +10,6 @@ namespace VRScout {
     float FlyDeadband { get; }
     float FlySensitivity { get; }
     bool OrientLockY { get; }
+    LayerMask PointerIgnoreLayers { get; }
   }
 }

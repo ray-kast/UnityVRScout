@@ -5665,6 +5665,10 @@ MonoBehaviour:
   maxFlySpeed: 10
   flyDeadband: 0.1
   flySensitivity: 0.75
+  orientLockY: 1
+  pointerIgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 516
 --- !u!114 &114539271027096408
 MonoBehaviour:
   m_ObjectHideFlags: 1

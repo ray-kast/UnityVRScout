@@ -14,12 +14,14 @@ namespace VRScout {
 
     [Tooltip("Lock the Y axis for rotating the world with the grip buttons.\nWARNING: Disable at your own risk!")]
     public bool orientLockY = true;
+    public LayerMask pointerIgnoreLayers;
 
     CharacterController IPlayerController.Controller => controller;
     float IPlayerController.MaxFlySpeed => maxFlySpeed;
     float IPlayerController.FlyDeadband => flyDeadband;
     float IPlayerController.FlySensitivity => flySensitivity;
     bool IPlayerController.OrientLockY => orientLockY;
+    LayerMask IPlayerController.PointerIgnoreLayers => pointerIgnoreLayers;
 
     void Awake() {
       controller = GetComponent<CharacterController>();

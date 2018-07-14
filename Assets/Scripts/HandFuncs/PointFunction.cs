@@ -12,6 +12,7 @@ namespace VRScout.HandFuncs {
 
     VRTK_Pointer point;
     VRTK_StraightPointerRenderer renderer;
+    VRTK_CustomRaycast raycast;
 
     public Dictionary<TooltipButtons, string> Tooltips => tooltips;
 
@@ -23,10 +24,13 @@ namespace VRScout.HandFuncs {
 
       point = ctl.gameObject.AddComponent<VRTK_Pointer>();
       renderer = ctl.gameObject.AddComponent<VRTK_StraightPointerRenderer>();
+      raycast = ctl.gameObject.AddComponent<VRTK_CustomRaycast>();
 
       point.pointerRenderer = renderer;
+      renderer.customRaycast = raycast;
 
       point.activationButton = VRTK_ControllerEvents.ButtonAlias.TriggerPress;
+      raycast.layersToIgnore = ctl.Player.PointerIgnoreLayers;
     }
 
     public void Disable(IHandController ctl) {
