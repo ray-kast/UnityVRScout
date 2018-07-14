@@ -61,25 +61,28 @@ namespace VRScout.HandFuncs {
 
     // TODO: Maybe add a drag deadband?
     void FixedUpdate() {
+      // NB: All delta values below are intentionally inverted.
       if (grab) {
         if (otherEvents.gripPressed) {
+          var currDoubleDiff = DoubleDiff;
+
           {
-            var fromVec = DoubleDiff;
+            var fromVec = currDoubleDiff;
             var toVec = lastDoubleDiff;
 
             // for my own sanity and the sanity of those around me
             if (player.OrientLockY) fromVec.y = toVec.y = 0.0f;
 
-            // NB: This is intentionally inverted
             var quat = Quaternion.FromToRotation(fromVec, toVec);
 
             player.Controller.transform.rotation = quat * player.Controller.transform.rotation;
           }
 
+          player.Controller.transform.localScale *= lastDoubleDiff.magnitude / currDoubleDiff.magnitude;
+
           lastDoubleDiff = DoubleDiff; // Recompute just in case
         }
         else {
-          // NB: This is intentionally inverted
           player.Controller.Move(lastPos - events.transform.position);
           lastPos = events.transform.position; // Gotta get the new position after the player moved
         }
