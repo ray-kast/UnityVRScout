@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace VRScout {
-  public struct HandMode {
+  public struct SimpleHandMode : IHandMode {
     List<Type> funcs;
 
     string name { get; }
 
-    public HandMode(string _name, IEnumerable<Type> _funcs) {
+    public SimpleHandMode(string _name, IEnumerable<Type> _funcs) {
       name = _name;
       funcs = new List<Type>(_funcs);
     }

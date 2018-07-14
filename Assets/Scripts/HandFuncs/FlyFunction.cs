@@ -2,11 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
+using TooltipButtons = VRTK.VRTK_ControllerTooltips.TooltipButtons;
+
 namespace VRScout.HandFuncs {
   public class FlyFunction : IHandFunction {
+    static readonly Dictionary<TooltipButtons, string> tooltips = new Dictionary<TooltipButtons, string> {
+      [TooltipButtons.TriggerTooltip] = "Fly",
+    };
+
     float speed;
     VRTK_ControllerEvents events;
     IPlayerController player;
+
+    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
 
     public FlyFunction() { }
 
