@@ -11,5 +11,6 @@ namespace VRScout {
     float FlySensitivity { get; }
     bool OrientLockY { get; }
     LayerMask PointerIgnoreLayers { get; }
+    GameObject CamViewfinder { get; }
   }
 }

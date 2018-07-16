@@ -34,6 +34,7 @@ namespace VRScout {
     void Awake() {
       // TODO: Is it worth it to try instantiating these at runtime with reflection?
       funcs = new Dictionary<Type, IHandFunction> {
+        [typeof(CameraFunction)] = new CameraFunction(),
         [typeof(FlyFunction)] = new FlyFunction(),
         [typeof(GrabFunction)] = new GrabFunction(),
         [typeof(OrientFunction)] = new OrientFunction(),
@@ -45,6 +46,7 @@ namespace VRScout {
         new SimpleHandMode("None", new Type[0]),
         new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
         new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
+        new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
       };
 
       gripModes = new List<SimpleHandMode> {
