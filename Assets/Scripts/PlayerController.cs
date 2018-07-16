@@ -8,6 +8,7 @@ namespace VRScout {
   public class PlayerController : MonoBehaviour, IPlayerController {
     CharacterController controller;
 
+    public float camFilmSize = 35.0f;
     public float maxFlySpeed = 10.0f;
     public float flyDeadband = 0.1f;
     public float flySensitivity = 0.75f;
@@ -20,6 +21,7 @@ namespace VRScout {
     public GameObject camViewfinder;
 
     CharacterController IPlayerController.Controller => controller;
+    float IPlayerController.CamFilmSize => camFilmSize;
     float IPlayerController.MaxFlySpeed => maxFlySpeed;
     float IPlayerController.FlyDeadband => flyDeadband;
     float IPlayerController.FlySensitivity => flySensitivity;
