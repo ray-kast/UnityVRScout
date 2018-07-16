@@ -39,12 +39,14 @@ namespace VRScout {
         [typeof(GrabFunction)] = new GrabFunction(),
         [typeof(OrientFunction)] = new OrientFunction(),
         [typeof(PointFunction)] = new PointFunction(),
+        [typeof(TeleportFunction)] = new TeleportFunction(),
       };
 
       // TODO: These both should probably be static.
       primaryModes = new List<SimpleHandMode> {
         new SimpleHandMode("None", new Type[0]),
         new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
+        new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
         new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
         new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
       };

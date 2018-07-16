@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using VRTK;
 
 namespace VRScout {
   public interface IPlayerController {
@@ -11,6 +12,8 @@ namespace VRScout {
     float FlySensitivity { get; }
     bool OrientLockY { get; }
     LayerMask PointerIgnoreLayers { get; }
+    VRTK_HeightAdjustTeleport Teleport { get; }
+    
     GameObject CamViewfinder { get; }
   }
 }
