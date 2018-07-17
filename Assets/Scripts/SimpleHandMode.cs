@@ -9,17 +9,11 @@ namespace VRScout {
 
     string name { get; }
 
+    public HashSet<Type> FuncTypes => new HashSet<Type>(funcs);
+
     public SimpleHandMode(string _name, IEnumerable<Type> _funcs) {
       name = _name;
       funcs = new List<Type>(_funcs);
-    }
-
-    public void Enable(IHandModeManager man) {
-      foreach (var func in funcs) man.EnableFunc(func);
-    }
-
-    public void Disable(IHandModeManager man) {
-      foreach (var func in funcs) man.DisableFunc(func);
     }
   }
 }
