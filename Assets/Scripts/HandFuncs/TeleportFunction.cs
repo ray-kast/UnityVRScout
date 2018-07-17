@@ -6,18 +6,18 @@ using VRTK;
 using TooltipButtons = VRTK.VRTK_ControllerTooltips.TooltipButtons;
 
 namespace VRScout.HandFuncs {
-  public class PointFunction : IHandFunction {
+  public class TeleportFunction : IHandFunction {
     static readonly Dictionary<TooltipButtons, string> tooltips = new Dictionary<TooltipButtons, string> {
-      [TooltipButtons.TriggerTooltip] = "Pointer",
+      [TooltipButtons.TriggerTooltip] = "Teleport",
     };
 
     VRTK_Pointer point;
-    VRTK_StraightPointerRenderer renderer;
+    VRTK_BezierPointerRenderer renderer;
     VRTK_CustomRaycast raycast;
 
     public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
-    public PointFunction() { }
+    public TeleportFunction() { }
 
     public void Enable(IHandController ctl) {
       if (point != null) GameObject.Destroy(point);
@@ -25,17 +25,24 @@ namespace VRScout.HandFuncs {
       if (raycast != null) GameObject.Destroy(raycast);
 
       point = ctl.gameObject.AddComponent<VRTK_Pointer>();
-      renderer = ctl.gameObject.AddComponent<VRTK_StraightPointerRenderer>();
+      renderer = ctl.gameObject.AddComponent<VRTK_BezierPointerRenderer>();
       raycast = ctl.gameObject.AddComponent<VRTK_CustomRaycast>();
 
       point.pointerRenderer = renderer;
       renderer.customRaycast = raycast;
 
+      point.enableTeleport = true;
       point.activationButton = VRTK_ControllerEvents.ButtonAlias.TriggerPress;
+      point.selectionButton = VRTK_ControllerEvents.ButtonAlias.TriggerPress;
+      point.selectOnPress = false;
       raycast.layersToIgnore = ctl.Player.PointerIgnoreLayers;
+
+      ctl.Player.Teleport.InitDestinationSetListener(ctl.gameObject, true);
     }
 
     public void Disable(IHandController ctl) {
+      ctl.Player.Teleport.InitDestinationSetListener(ctl.gameObject, false);
+
       GameObject.Destroy(point.customOrigin.gameObject);
       GameObject.Destroy(point);
       GameObject.Destroy(renderer);

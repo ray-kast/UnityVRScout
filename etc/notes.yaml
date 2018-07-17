@@ -44,4 +44,4 @@ tool modes:
 
 other notes:
 - having two cameras open should probably be disallowed, for performance and sanity reasons
-- 'TODO: Add tooltips to the controllers!'
+- 'TODO: fix the custom raycasts on the PlayArea object'

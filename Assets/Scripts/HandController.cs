@@ -7,13 +7,24 @@ using VRTK;
 namespace VRScout {
 
   [RequireComponent(typeof(VRTK_ControllerEvents))]
-  public class HandController : MonoBehaviour, IHandController, IHandModeManager {
+  public class HandController : MonoBehaviour, IHandController {
+    static readonly List<SimpleHandMode> primaryModes = new List<SimpleHandMode> {
+      new SimpleHandMode("None", new Type[0]),
+      new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
+      new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
+      new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
+      new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
+    };
+
+    static readonly List<SimpleHandMode> gripModes = new List<SimpleHandMode> {
+      new SimpleHandMode("Grab", new[] { typeof(GrabFunction), }),
+      new SimpleHandMode("Orient", new[] { typeof(OrientFunction) }),
+    };
+
     Dictionary<Type, IHandFunction> funcs;
-    List<SimpleHandMode> primaryModes, gripModes;
-    HashSet<IHandFunction> activeFuncs;
+    HashSet<Type> activeFuncs;
     VRTK_ControllerEvents events;
     VRTK_ControllerTooltips tooltips;
-    IHandMode currMode;
     int currPrimaryMode, currGripMode; // TODO: currGripMode needs to be shared between both hands
 
     public HandController other;
@@ -33,29 +44,19 @@ namespace VRScout {
 
     void Awake() {
       // TODO: Is it worth it to try instantiating these at runtime with reflection?
+      // NB: This CANNOT be static! (Each function can operate on exactly one controller)
       funcs = new Dictionary<Type, IHandFunction> {
+        [typeof(CameraFunction)] = new CameraFunction(),
         [typeof(FlyFunction)] = new FlyFunction(),
         [typeof(GrabFunction)] = new GrabFunction(),
         [typeof(OrientFunction)] = new OrientFunction(),
         [typeof(PointFunction)] = new PointFunction(),
+        [typeof(TeleportFunction)] = new TeleportFunction(),
       };
 
-      // TODO: These both should probably be static.
-      primaryModes = new List<SimpleHandMode> {
-        new SimpleHandMode("None", new Type[0]),
-        new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
-        new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
-      };
-
-      gripModes = new List<SimpleHandMode> {
-        new SimpleHandMode("Grab", new[] { typeof(GrabFunction), }),
-        new SimpleHandMode("Orient", new[] { typeof(OrientFunction) }),
-      };
-
-      activeFuncs = new HashSet<IHandFunction>();
+      activeFuncs = new HashSet<Type>();
       events = GetComponent<VRTK_ControllerEvents>();
       tooltips = GetComponentInChildren<VRTK_ControllerTooltips>();
-      currMode = null;
       currPrimaryMode = currGripMode = 0;
 
       tooltips.SendMessage("Awake"); // This is super dumb but it prevents an exception from being thrown
@@ -70,30 +71,43 @@ namespace VRScout {
 
     void FixedUpdate() => onFixedUpdate?.Invoke();
 
-    void IHandModeManager.EnableFunc(Type func) {
-      var fnObj = funcs[func];
-
-      if (activeFuncs.Add(fnObj)) fnObj.Enable(this);
-
-      foreach (var pair in fnObj.Tooltips) tooltips.UpdateText(pair.Key, pair.Value);
-
-      tooltips.ToggleTips(true);
-    }
-
-    void IHandModeManager.DisableFunc(Type func) {
-      var fnObj = funcs[func];
-
-      if (activeFuncs.Remove(fnObj)) fnObj.Disable(this);
-
-      foreach (var pair in fnObj.Tooltips) tooltips.UpdateText(pair.Key, "");
-
-      tooltips.ToggleTips(true);
-    }
-
     void SetMode(IHandMode mode) {
-      currMode?.Disable(this);
-      currMode = mode;
-      currMode.Enable(this);
+
+      var newActiveFuncs = mode.FuncTypes;
+
+      VRTK_ControllerTooltips.TooltipButtons newTooltips = 0;
+
+      foreach (var func in activeFuncs) {
+        if (!newActiveFuncs.Contains(func)) {
+          var fnObj = funcs[func];
+
+          fnObj.Disable(this);
+
+          foreach (var pair in fnObj.Tooltips) {
+            tooltips.UpdateText(pair.Key, "");
+
+            newTooltips |= pair.Key;
+          }
+        }
+      }
+
+      foreach (var func in newActiveFuncs) {
+        if (!activeFuncs.Contains(func)) {
+          var fnObj = funcs[func];
+
+          fnObj.Enable(this);
+
+          foreach (var pair in fnObj.Tooltips) {
+            tooltips.UpdateText(pair.Key, pair.Value);
+
+            newTooltips |= pair.Key;
+          }
+        }
+      }
+
+      tooltips.ToggleTips(true, newTooltips);
+
+      activeFuncs = newActiveFuncs;
     }
 
     void SetToolMode(int primary, int grip)
