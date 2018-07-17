@@ -5715,6 +5715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFilmSize: 35
+  camPitchOffset: 35
   camJpegQuality: 85
   maxFlySpeed: 10
   flyDeadband: 0.1

@@ -9,6 +9,7 @@ namespace VRScout {
     CharacterController controller;
 
     public float camFilmSize = 35.0f;
+    public float camPitchOffset = 15.0f;
     public int camJpegQuality = 75;
     public float maxFlySpeed = 10.0f;
     public float flyDeadband = 0.1f;
@@ -24,6 +25,7 @@ namespace VRScout {
 
     CharacterController IPlayerController.Controller => controller;
     float IPlayerController.CamFilmSize => camFilmSize;
+    float IPlayerController.CamPitchOffset => camPitchOffset;
     int IPlayerController.CamJpegQuality => camJpegQuality;
     float IPlayerController.MaxFlySpeed => maxFlySpeed;
     float IPlayerController.FlyDeadband => flyDeadband;

@@ -60,7 +60,7 @@ namespace VRScout.HandFuncs {
       cam.targetTexture = viewfinderTex;
 
       // TODO: Probably shouldn't hard-code these
-      camObject.transform.localRotation = Quaternion.Euler(15.0f, 0.0f, 0.0f);
+      camObject.transform.localRotation = Quaternion.Euler(ctl.Player.CamPitchOffset, 0.0f, 0.0f);
       viewfinder.transform.localPosition = new Vector3(0.0f, 0.1f, 0.1f);
       viewfinder.transform.localRotation = Quaternion.Euler(-45.0f, 0.0f, 0.0f);
 
