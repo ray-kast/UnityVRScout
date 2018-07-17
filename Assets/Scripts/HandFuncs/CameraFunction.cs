@@ -24,7 +24,7 @@ namespace VRScout.HandFuncs {
     IPlayerController player;
     Camera cam;
     RenderTexture viewfinderTex;
-    GameObject viewfinder;
+    GameObject camObject, viewfinder;
 
     public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
@@ -40,7 +40,11 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed += OnRecord;
       ctl.OnFixedUpdate += FixedUpdate;
 
-      cam = ctl.gameObject.AddComponent<Camera>();
+      camObject = GameObject.Instantiate(ctl.Player.SnapshotCam, ctl.gameObject.transform, false);
+
+      cam = camObject.GetComponent<Camera>();
+
+      cam.enabled = true;
 
       const int WIDTH = 1200;
       const int HEIGHT = 800;
@@ -56,6 +60,7 @@ namespace VRScout.HandFuncs {
       cam.targetTexture = viewfinderTex;
 
       // TODO: Probably shouldn't hard-code these
+      camObject.transform.localRotation = Quaternion.Euler(15.0f, 0.0f, 0.0f);
       viewfinder.transform.localPosition = new Vector3(0.0f, 0.1f, 0.1f);
       viewfinder.transform.localRotation = Quaternion.Euler(-45.0f, 0.0f, 0.0f);
 
@@ -85,7 +90,7 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed -= OnRecord;
       ctl.OnFixedUpdate -= FixedUpdate;
 
-      GameObject.Destroy(cam);
+      GameObject.Destroy(camObject);
       GameObject.Destroy(viewfinderTex);
       GameObject.Destroy(viewfinder);
     }

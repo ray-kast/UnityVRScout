@@ -5724,6 +5724,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 516
   teleport: {fileID: 114023513836700576}
+  snapshotCam: {fileID: 1328618777368730, guid: 2063b2c3dba289c4183db0d3384bc7ae,
+    type: 2}
   camViewfinder: {fileID: 1056192479914066, guid: 62d33769c00364d4ebf11ff0b82680c6,
     type: 2}
 --- !u!114 &114539271027096408
