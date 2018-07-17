@@ -5714,6 +5714,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 408c057fb764aeb439a8f996d0b99ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camFilmSize: 35
+  camJpegQuality: 85
   maxFlySpeed: 10
   flyDeadband: 0.1
   flySensitivity: 0.75

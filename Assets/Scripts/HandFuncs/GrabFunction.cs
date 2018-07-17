@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using VRTK;
 
@@ -13,7 +14,7 @@ namespace VRScout.HandFuncs {
     VRTK_InteractTouch touch;
     VRTK_InteractGrab grab;
 
-    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
+    public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
     public GrabFunction() { }
 

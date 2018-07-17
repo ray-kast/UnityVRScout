@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using VRTK;
 
@@ -17,7 +18,7 @@ namespace VRScout.HandFuncs {
 
     Vector3 DoubleDiff => otherEvents.transform.position - events.transform.position;
 
-    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
+    public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
     public OrientFunction() { }
 

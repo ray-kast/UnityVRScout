@@ -8,8 +8,20 @@ namespace VRScout {
 
   [RequireComponent(typeof(VRTK_ControllerEvents))]
   public class HandController : MonoBehaviour, IHandController {
+    static readonly List<SimpleHandMode> primaryModes = new List<SimpleHandMode> {
+      new SimpleHandMode("None", new Type[0]),
+      new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
+      new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
+      new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
+      new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
+    };
+
+    static readonly List<SimpleHandMode> gripModes = new List<SimpleHandMode> {
+      new SimpleHandMode("Grab", new[] { typeof(GrabFunction), }),
+      new SimpleHandMode("Orient", new[] { typeof(OrientFunction) }),
+    };
+
     Dictionary<Type, IHandFunction> funcs;
-    List<SimpleHandMode> primaryModes, gripModes;
     HashSet<Type> activeFuncs;
     VRTK_ControllerEvents events;
     VRTK_ControllerTooltips tooltips;
@@ -32,6 +44,7 @@ namespace VRScout {
 
     void Awake() {
       // TODO: Is it worth it to try instantiating these at runtime with reflection?
+      // NB: This CANNOT be static! (Each function can operate on exactly one controller)
       funcs = new Dictionary<Type, IHandFunction> {
         [typeof(CameraFunction)] = new CameraFunction(),
         [typeof(FlyFunction)] = new FlyFunction(),
@@ -39,20 +52,6 @@ namespace VRScout {
         [typeof(OrientFunction)] = new OrientFunction(),
         [typeof(PointFunction)] = new PointFunction(),
         [typeof(TeleportFunction)] = new TeleportFunction(),
-      };
-
-      // TODO: These both should probably be static.
-      primaryModes = new List<SimpleHandMode> {
-        new SimpleHandMode("None", new Type[0]),
-        new SimpleHandMode("Fly", new[] { typeof(FlyFunction) }),
-        new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
-        new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
-        new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
-      };
-
-      gripModes = new List<SimpleHandMode> {
-        new SimpleHandMode("Grab", new[] { typeof(GrabFunction), }),
-        new SimpleHandMode("Orient", new[] { typeof(OrientFunction) }),
       };
 
       activeFuncs = new HashSet<Type>();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using VRTK;
 
@@ -14,7 +15,7 @@ namespace VRScout.HandFuncs {
     VRTK_ControllerEvents events;
     IPlayerController player;
 
-    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
+    public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
     public FlyFunction() { }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace VRScout.HandFuncs {
     RenderTexture viewfinderTex;
     GameObject viewfinder;
 
-    public Dictionary<TooltipButtons, string> Tooltips => tooltips;
+    public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
     public CameraFunction() { }
 
@@ -124,7 +125,10 @@ namespace VRScout.HandFuncs {
 
         Directory.CreateDirectory("Snapshots");
 
-        File.WriteAllBytes(Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-hh-mm-ss-ff}.jpg"), tex.EncodeToJPG(75)); // TODO: Make the JPEG quality an option?
+        // TODO: These files are getting written in the wrong color space
+        File.WriteAllBytes(
+          Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-hh-mm-ss-ff}.jpg"),
+          tex.EncodeToJPG(player.CamJpegQuality));
       }
       finally {
         cam.targetTexture = viewfinderTex;
@@ -133,7 +137,6 @@ namespace VRScout.HandFuncs {
 
     void FixedUpdate() {
       focalLen = Mathf.Clamp(focalLen + focalLenSpeed * LEN_ADJUST_MAX_SPEED * Time.fixedDeltaTime, MIN_FOCAL_LEN, MAX_FOCAL_LEN);
-      if (Mathf.Abs(focalLenSpeed) > 1e-5f) Debug.Log(focalLen);
       cam.fieldOfView = 2.0f * Mathf.Rad2Deg * Mathf.Atan(0.5f * player.CamFilmSize / focalLen);
     }
   }

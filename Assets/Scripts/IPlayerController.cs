@@ -8,6 +8,7 @@ namespace VRScout {
     CharacterController Controller { get; }
 
     float CamFilmSize { get; }
+    int CamJpegQuality { get; }
     float MaxFlySpeed { get; }
     float FlyDeadband { get; }
     float FlySensitivity { get; }
