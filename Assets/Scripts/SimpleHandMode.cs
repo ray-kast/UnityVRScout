@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace VRScout {
   public struct SimpleHandMode : IHandMode {
+    public static SimpleHandMode Disabled { get; } = new SimpleHandMode("<disabled>", new Type[0]);
+
     List<Type> funcs;
 
     string name { get; }
