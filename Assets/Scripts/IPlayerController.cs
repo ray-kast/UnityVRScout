@@ -17,6 +17,7 @@ namespace VRScout {
     LayerMask PointerIgnoreLayers { get; }
     VRTK_HeightAdjustTeleport Teleport { get; }
 
+    GameObject ModeMenuItem { get; }
     GameObject SnapshotCam { get; }
     GameObject CamViewfinder { get; }
   }

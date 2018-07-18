@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using VRScout.HandFuncs;
 using VRTK;
@@ -40,6 +41,9 @@ namespace VRScout {
     IHandController IHandController.Other => other;
     IPlayerController IHandController.Player => player;
     VRTK_ControllerEvents IHandController.Events => events;
+
+    ReadOnlyCollection<SimpleHandMode> IHandModeController.PrimaryModes => new ReadOnlyCollection<SimpleHandMode>(primaryModes);
+    ReadOnlyCollection<SimpleHandMode> IHandModeController.GripModes => new ReadOnlyCollection<SimpleHandMode>(gripModes);
 
     event Action IHandController.OnFixedUpdate {
       add { onFixedUpdate += value; }
@@ -139,5 +143,10 @@ namespace VRScout {
       SetEnabled();
       other.SetEnabled();
     }
+
+    // NB: These functions WILL NOT update the tools immediately!
+    void IHandModeController.SelectPrimary(int mode) => currPrimaryMode = mode;
+
+    void IHandModeController.SelectGrip(int mode) => other.currGripMode = currGripMode = mode;
   }
 }

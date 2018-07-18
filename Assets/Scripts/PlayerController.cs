@@ -20,6 +20,7 @@ namespace VRScout {
     public LayerMask pointerIgnoreLayers;
     public VRTK_HeightAdjustTeleport teleport;
 
+    public GameObject modeMenuItem;
     public GameObject snapshotCam;
     public GameObject camViewfinder;
 
@@ -34,6 +35,7 @@ namespace VRScout {
     LayerMask IPlayerController.PointerIgnoreLayers => pointerIgnoreLayers;
     VRTK_HeightAdjustTeleport IPlayerController.Teleport => teleport;
 
+    GameObject IPlayerController.ModeMenuItem => modeMenuItem;
     GameObject IPlayerController.SnapshotCam => snapshotCam;
     GameObject IPlayerController.CamViewfinder => camViewfinder;
 
