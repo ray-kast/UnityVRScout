@@ -31,6 +31,7 @@ namespace VRScout.HandFuncs {
       point.pointerRenderer = renderer;
       renderer.customRaycast = raycast;
 
+      point.enableTeleport = false;
       point.activationButton = VRTK_ControllerEvents.ButtonAlias.TriggerPress;
       raycast.layersToIgnore = ctl.Player.PointerIgnoreLayers;
     }

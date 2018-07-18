@@ -132,7 +132,7 @@ namespace VRScout.HandFuncs {
 
         // TODO: These files are getting written in the wrong color space
         File.WriteAllBytes(
-          Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-hh-mm-ss-ff}.jpg"),
+          Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-HH-mm-ss-ff}.jpg"),
           tex.EncodeToJPG(player.CamJpegQuality));
       }
       finally {
