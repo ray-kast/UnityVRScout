@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -74,30 +75,85 @@ namespace VRScout.HandFuncs {
     }
 
     class WrapPanelElement : ItemsElement {
-      protected override Vector2 MeasureImpl(Vector2 space) { // TODO
-        float width = 0.0f, maxHeight = 0.0f;
+      protected override Vector2 MeasureImpl(Vector2 space) {
+        float rowWidth = 0.0f, rowMaxHeight = 0.0f, maxWidth = 0.0f, height = 0.0f;
 
         var spaceLeft = space;
 
         foreach (var child in Children) {
-          child.Measure(space);
+          child.Measure(spaceLeft);
 
-          width += child.DesiredSize.x;
+          if (child.DesiredSize.x > spaceLeft.x) {
+            maxWidth = Mathf.Max(maxWidth, rowWidth);
+            height += rowMaxHeight;
+
+            rowWidth = 0.0f;
+            rowMaxHeight = 0.0f;
+
+            spaceLeft = space;
+            spaceLeft.y -= height;
+
+            child.Measure(spaceLeft);
+          }
+
+          rowWidth += child.DesiredSize.x;
           spaceLeft.x -= child.DesiredSize.x;
-          // TODO: handle wrapping
-          maxHeight = Mathf.Max(maxHeight, child.DesiredSize.y);
+          rowMaxHeight = Mathf.Max(rowMaxHeight, child.DesiredSize.y);
         }
 
-        return new Vector2(width, maxHeight);
+        maxWidth = Mathf.Max(maxWidth, rowWidth);
+        height += rowMaxHeight;
+
+        return new Vector2(maxWidth, height);
       }
 
       protected override void ArrangeImpl(Rect space) {
-        float x = 0.0f;
+        if (Children.Count == 0) return;
 
-        foreach (var child in Children) {
-          // TODO: handle wrapping
-          child.Arrange(new Rect(space.xMin + x, space.yMin, child.DesiredSize.x, DesiredSize.y));
-          x += child.DesiredSize.x;
+        // TODO: Should this be stored by Measure()?
+        var rows = new Queue<ValueTuple<Vector2, int>>();
+
+        {
+          float width = 0.0f, maxHeight = 0.0f, widthLeft = space.size.x;
+          int count = 0;
+
+          foreach (var child in Children) {
+            if (child.DesiredSize.x > widthLeft) {
+              rows.Enqueue(new ValueTuple<Vector2, int>(new Vector2(width, maxHeight), count));
+
+              width = 0.0f;
+              maxHeight = 0.0f;
+
+              widthLeft = space.size.x;
+              count = 0;
+            }
+
+            width += child.DesiredSize.x;
+            widthLeft -= child.DesiredSize.x;
+            maxHeight = Mathf.Max(maxHeight, child.DesiredSize.y);
+            ++count;
+          }
+
+          // Count should never be zero here, but just in case
+          if (count != 0) rows.Enqueue(new ValueTuple<Vector2, int>(new Vector2(width, maxHeight), count));
+        }
+
+        {
+          var currRow = new ValueTuple<Vector2, int>(Vector2.zero, 0);
+          float x = 0.0f, y = 0.0f;
+
+          foreach (var child in Children) {
+            if (currRow.Item2 == 0) {
+              y += currRow.Item1.y;
+              currRow = rows.Dequeue();
+              x = 0.5f * (space.width - currRow.Item1.x);
+            }
+
+            child.Arrange(new Rect(space.xMin + x, space.yMin + y, child.DesiredSize.x, currRow.Item1.y));
+            x += child.DesiredSize.x;
+
+            --currRow.Item2;
+          }
         }
       }
     }
@@ -199,7 +255,7 @@ namespace VRScout.HandFuncs {
         });
       }
 
-      root.Measure(new Vector2(1000.0f, float.PositiveInfinity));
+      root.Measure(new Vector2(300.0f, float.PositiveInfinity));
       root.Arrange(new Rect(root.DesiredSize * -0.5f, root.DesiredSize));
     }
   }
