@@ -45,6 +45,9 @@ namespace VRScout {
     ReadOnlyCollection<SimpleHandMode> IHandModeController.PrimaryModes => new ReadOnlyCollection<SimpleHandMode>(primaryModes);
     ReadOnlyCollection<SimpleHandMode> IHandModeController.GripModes => new ReadOnlyCollection<SimpleHandMode>(gripModes);
 
+    int IHandModeController.CurrPrimaryMode => currPrimaryMode;
+    int IHandModeController.CurrGripMode => currGripMode;
+
     event Action IHandController.OnFixedUpdate {
       add { onFixedUpdate += value; }
       remove { onFixedUpdate -= value; }
@@ -129,7 +132,6 @@ namespace VRScout {
 
     void SetEnabled() => SetToolMode(currPrimaryMode, currGripMode);
 
-    // TODO, obviously
     void SetMenuMode() => SetMode(modeMenu);
 
     void SetDisabled() => SetMode(SimpleHandMode.Disabled);

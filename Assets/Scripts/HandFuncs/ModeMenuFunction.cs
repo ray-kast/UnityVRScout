@@ -73,7 +73,11 @@ namespace VRScout.HandFuncs {
       };
 
       menuObj.transform.position = ctl.gameObject.transform.position;
-      menuObj.transform.rotation = Quaternion.Euler(0.0f, ctl.gameObject.transform.eulerAngles.y, 0.0f);
+      // The ternary ensures the menu's not flipped if you're pointing the controller backwards
+      menuObj.transform.rotation = Quaternion.Euler(
+        0.0f,
+        ctl.gameObject.transform.eulerAngles.y + (ctl.gameObject.transform.up.y < 0.0f ? 180.0f : 0.0f),
+        0.0f);
       menuObj.transform.localScale = ctl.gameObject.transform.lossyScale;
 
       menu.Init(ctl.Player, modeCtl);

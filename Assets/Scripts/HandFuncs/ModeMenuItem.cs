@@ -16,16 +16,35 @@ namespace VRScout.HandFuncs {
     public UI.Image background;
     public UI.Text text;
 
-    public void SetSize(Vector2 size, float scale) {
-      transform.localScale = Vector3.one * 0.01f * scale;
-      GetComponent<BoxCollider>().size = new Vector3(size.x, size.y, 1.0f);
-      canvas.GetComponent<RectTransform>().sizeDelta = size;
-      background.GetComponent<RectTransform>().sizeDelta = size;
-      text.GetComponent<RectTransform>().sizeDelta = size;
+    public Vector3 Position {
+      set {
+        value.Scale(transform.localScale);
+        transform.localPosition = value;
+      }
+    }
+
+    public float Scale {
+      set {
+        transform.localScale = Vector3.one * value;
+      }
+    }
+
+    public Vector2 Size {
+      get { return canvas.GetComponent<RectTransform>().rect.size; }
+      set {
+        GetComponent<BoxCollider>().size = new Vector3(value.x, value.y, 0.01f / transform.localScale.z);
+        canvas.GetComponent<RectTransform>().sizeDelta = value;
+        background.GetComponent<RectTransform>().sizeDelta = value;
+        text.GetComponent<RectTransform>().sizeDelta = value;
+      }
     }
 
     public void SetText(string value) {
       text.text = value;
+    }
+
+    public void SetSelected() {
+      background.color = new Color(0.1f, 0.5f, 1.0f, 1.0f);
     }
   }
 }

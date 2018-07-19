@@ -10,6 +10,10 @@ namespace VRScout {
 
     ReadOnlyCollection<SimpleHandMode> GripModes { get; }
 
+    int CurrPrimaryMode { get; }
+
+    int CurrGripMode { get; }
+
     void BeginMenu();
 
     void EndMenu();
