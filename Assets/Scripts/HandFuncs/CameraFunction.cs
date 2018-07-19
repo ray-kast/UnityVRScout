@@ -55,7 +55,7 @@ namespace VRScout.HandFuncs {
       viewfinder = GameObject.Instantiate(ctl.Player.CamViewfinder, ctl.gameObject.transform, false);
 
       if (!viewfinderTex.Create())
-        Debug.LogError("Failed to create render target for CameraFunction");
+        Debug.LogError("Failed to create viewfinder render target for CameraFunction");
 
       cam.targetTexture = viewfinderTex;
 
@@ -119,6 +119,9 @@ namespace VRScout.HandFuncs {
         var rtex = new RenderTexture(
           new RenderTextureDescriptor(WIDTH, HEIGHT, RenderTextureFormat.ARGB32));
 
+        if (!rtex.Create())
+          Debug.LogError("Failed to create render target for CameraFunction");
+
         cam.targetTexture = rtex;
         cam.Render();
 
@@ -128,12 +131,17 @@ namespace VRScout.HandFuncs {
 
         tex.ReadPixels(new Rect(0, 0, WIDTH, HEIGHT), 0, 0);
 
-        Directory.CreateDirectory("Snapshots");
+        try {
+          Directory.CreateDirectory("Snapshots");
 
-        // TODO: These files are getting written in the wrong color space
-        File.WriteAllBytes(
-          Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-HH-mm-ss-ff}.jpg"),
-          tex.EncodeToJPG(player.CamJpegQuality));
+          // TODO: These files are getting written in the wrong color space
+          File.WriteAllBytes(
+            Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-HH-mm-ss-ff}.jpg"),
+            tex.EncodeToJPG(player.CamJpegQuality));
+        }
+        catch (IOException ex) {
+          Debug.LogError($"Failed to write snapshot file: {ex}");
+        }
       }
       finally {
         cam.targetTexture = viewfinderTex;
