@@ -24,7 +24,7 @@ namespace VRScout.HandFuncs {
     IPlayerController player;
     Camera cam;
     RenderTexture viewfinderTex;
-    GameObject viewfinder;
+    GameObject camObject, viewfinder;
 
     public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
@@ -40,7 +40,11 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed += OnRecord;
       ctl.OnFixedUpdate += FixedUpdate;
 
-      cam = ctl.gameObject.AddComponent<Camera>();
+      camObject = GameObject.Instantiate(ctl.Player.SnapshotCam, ctl.gameObject.transform, false);
+
+      cam = camObject.GetComponent<Camera>();
+
+      cam.enabled = true;
 
       const int WIDTH = 1200;
       const int HEIGHT = 800;
@@ -51,11 +55,12 @@ namespace VRScout.HandFuncs {
       viewfinder = GameObject.Instantiate(ctl.Player.CamViewfinder, ctl.gameObject.transform, false);
 
       if (!viewfinderTex.Create())
-        Debug.LogError("Failed to create render target for CameraFunction");
+        Debug.LogError("Failed to create viewfinder render target for CameraFunction");
 
       cam.targetTexture = viewfinderTex;
 
       // TODO: Probably shouldn't hard-code these
+      camObject.transform.localRotation = Quaternion.Euler(ctl.Player.CamPitchOffset, 0.0f, 0.0f);
       viewfinder.transform.localPosition = new Vector3(0.0f, 0.1f, 0.1f);
       viewfinder.transform.localRotation = Quaternion.Euler(-45.0f, 0.0f, 0.0f);
 
@@ -85,7 +90,7 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed -= OnRecord;
       ctl.OnFixedUpdate -= FixedUpdate;
 
-      GameObject.Destroy(cam);
+      GameObject.Destroy(camObject);
       GameObject.Destroy(viewfinderTex);
       GameObject.Destroy(viewfinder);
     }
@@ -114,6 +119,9 @@ namespace VRScout.HandFuncs {
         var rtex = new RenderTexture(
           new RenderTextureDescriptor(WIDTH, HEIGHT, RenderTextureFormat.ARGB32));
 
+        if (!rtex.Create())
+          Debug.LogError("Failed to create render target for CameraFunction");
+
         cam.targetTexture = rtex;
         cam.Render();
 
@@ -123,12 +131,17 @@ namespace VRScout.HandFuncs {
 
         tex.ReadPixels(new Rect(0, 0, WIDTH, HEIGHT), 0, 0);
 
-        Directory.CreateDirectory("Snapshots");
+        try {
+          Directory.CreateDirectory("Snapshots");
 
-        // TODO: These files are getting written in the wrong color space
-        File.WriteAllBytes(
-          Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-hh-mm-ss-ff}.jpg"),
-          tex.EncodeToJPG(player.CamJpegQuality));
+          // TODO: These files are getting written in the wrong color space
+          File.WriteAllBytes(
+            Path.Combine("Snapshots", $"snapshot_{DateTime.Now:yyyy-MM-dd-HH-mm-ss-ff}.jpg"),
+            tex.EncodeToJPG(player.CamJpegQuality));
+        }
+        catch (IOException ex) {
+          Debug.LogError($"Failed to write snapshot file: {ex}");
+        }
       }
       finally {
         cam.targetTexture = viewfinderTex;

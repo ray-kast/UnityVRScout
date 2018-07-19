@@ -9,6 +9,7 @@ namespace VRScout {
     CharacterController controller;
 
     public float camFilmSize = 35.0f;
+    public float camPitchOffset = 15.0f;
     public int camJpegQuality = 75;
     public float maxFlySpeed = 10.0f;
     public float flyDeadband = 0.1f;
@@ -19,10 +20,13 @@ namespace VRScout {
     public LayerMask pointerIgnoreLayers;
     public VRTK_HeightAdjustTeleport teleport;
 
+    public GameObject modeMenuItem;
+    public GameObject snapshotCam;
     public GameObject camViewfinder;
 
     CharacterController IPlayerController.Controller => controller;
     float IPlayerController.CamFilmSize => camFilmSize;
+    float IPlayerController.CamPitchOffset => camPitchOffset;
     int IPlayerController.CamJpegQuality => camJpegQuality;
     float IPlayerController.MaxFlySpeed => maxFlySpeed;
     float IPlayerController.FlyDeadband => flyDeadband;
@@ -31,6 +35,8 @@ namespace VRScout {
     LayerMask IPlayerController.PointerIgnoreLayers => pointerIgnoreLayers;
     VRTK_HeightAdjustTeleport IPlayerController.Teleport => teleport;
 
+    GameObject IPlayerController.ModeMenuItem => modeMenuItem;
+    GameObject IPlayerController.SnapshotCam => snapshotCam;
     GameObject IPlayerController.CamViewfinder => camViewfinder;
 
     void Awake() {

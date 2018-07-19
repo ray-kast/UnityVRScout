@@ -8,6 +8,7 @@ namespace VRScout {
     CharacterController Controller { get; }
 
     float CamFilmSize { get; }
+    float CamPitchOffset { get; }
     int CamJpegQuality { get; }
     float MaxFlySpeed { get; }
     float FlyDeadband { get; }
@@ -16,6 +17,8 @@ namespace VRScout {
     LayerMask PointerIgnoreLayers { get; }
     VRTK_HeightAdjustTeleport Teleport { get; }
 
+    GameObject ModeMenuItem { get; }
+    GameObject SnapshotCam { get; }
     GameObject CamViewfinder { get; }
   }
 }

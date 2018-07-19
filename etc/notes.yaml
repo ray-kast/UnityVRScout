@@ -45,3 +45,4 @@ tool modes:
 other notes:
 - having two cameras open should probably be disallowed, for performance and sanity reasons
 - 'TODO: fix the custom raycasts on the PlayArea object'
+- 'TODO: make the max fly speed adjustable in-game'
