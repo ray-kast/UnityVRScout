@@ -5731,6 +5731,8 @@ MonoBehaviour:
     type: 2}
   camViewfinder: {fileID: 1056192479914066, guid: 62d33769c00364d4ebf11ff0b82680c6,
     type: 2}
+  measureLine: {fileID: 1889899813507534, guid: 02476fbd1cf2e54489014ba8d029e46e,
+    type: 2}
 --- !u!114 &114539271027096408
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -17,6 +17,7 @@ namespace VRScout {
       new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
       new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
       new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
+      new SimpleHandMode("Measure", new[] { typeof(MeasureFunction) }),
     };
 
     static readonly List<SimpleHandMode> gripModes = new List<SimpleHandMode> {
@@ -61,6 +62,7 @@ namespace VRScout {
         [typeof(CameraFunction)] = new CameraFunction(),
         [typeof(FlyFunction)] = new FlyFunction(),
         [typeof(GrabFunction)] = new GrabFunction(),
+        [typeof(MeasureFunction)] = new MeasureFunction(),
         [typeof(ModeControlFunction)] = new ModeControlFunction(this),
         [typeof(ModeMenuFunction)] = new ModeMenuFunction(this),
         [typeof(OrientFunction)] = new OrientFunction(),
