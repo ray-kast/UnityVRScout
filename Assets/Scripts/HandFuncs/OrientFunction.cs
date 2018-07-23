@@ -53,9 +53,7 @@ namespace VRScout.HandFuncs {
     }
 
     void OnDoubleGrabStart(object sender, ControllerInteractionEventArgs e) {
-      if (grab) {
-        lastDoubleDiff = DoubleDiff;
-      }
+      if (grab) lastDoubleDiff = DoubleDiff;
     }
 
     void OnGrabEnd(object sender, ControllerInteractionEventArgs e) => grab = false;

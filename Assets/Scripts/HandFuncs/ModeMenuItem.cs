@@ -24,9 +24,7 @@ namespace VRScout.HandFuncs {
     }
 
     public float Scale {
-      set {
-        transform.localScale = Vector3.one * value;
-      }
+      set { transform.localScale = Vector3.one * value; }
     }
 
     public Vector2 Size {

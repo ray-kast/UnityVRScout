@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -56,7 +56,6 @@ namespace VRScout {
     public PlayerController player;
 
     void Awake() {
-      // TODO: Is it worth it to try instantiating these at runtime with reflection?
       // NB: This CANNOT be static! (Each function can operate on exactly one controller)
       funcs = new Dictionary<Type, IHandFunction> {
         [typeof(CameraFunction)] = new CameraFunction(),
