@@ -201,7 +201,7 @@ namespace VRScout.HandFuncs {
       item.index = index;
       item.Scale = SCALE;
       item.Size = new Vector2(100.0f, 30.0f);
-      item.SetText(text);
+      item.Text = text;
 
       return item;
     }

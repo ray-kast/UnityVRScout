@@ -24,6 +24,7 @@ namespace VRScout {
     public GameObject snapshotCam;
     public GameObject camViewfinder;
     public GameObject measureLine;
+    public GameObject measureReadout;
 
     CharacterController IPlayerController.Controller => controller;
     float IPlayerController.CamFilmSize => camFilmSize;
@@ -40,6 +41,7 @@ namespace VRScout {
     GameObject IPlayerController.SnapshotCam => snapshotCam;
     GameObject IPlayerController.CamViewfinder => camViewfinder;
     GameObject IPlayerController.MeasureLine => measureLine;
+    GameObject IPlayerController.MeasureReadout => measureReadout;
 
     void Awake() {
       controller = GetComponent<CharacterController>();

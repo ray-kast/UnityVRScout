@@ -12,59 +12,103 @@ namespace VRScout.HandFuncs {
     };
 
     IHandController hand;
-    GameObject lineObj;
+    GameObject lineObj, readoutObj;
     LineRenderer line;
+    MeasureReadout readout;
+    Vector3 pos1, pos2;
     int state = 0;
 
     public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
+    Vector3 TrackPos => hand.gameObject.transform.position;
+
     public MeasureFunction() { }
 
-    // TODO: None of this code is currently right
     public void Enable(IHandController ctl) {
       if (lineObj != null) GameObject.Destroy(lineObj);
+      if (readoutObj != null) GameObject.Destroy(readoutObj);
 
       hand = ctl;
       ctl.Events.TriggerPressed += Advance;
       ctl.OnFixedUpdate += FixedUpdate;
 
       lineObj = GameObject.Instantiate(ctl.Player.MeasureLine, ctl.gameObject.transform, false);
+      readoutObj = GameObject.Instantiate(ctl.Player.MeasureReadout, ctl.gameObject.transform, false);
 
       line = lineObj.GetComponent<LineRenderer>();
-      line.enabled = false;
+      readout = readoutObj.GetComponent<MeasureReadout>();
+
+      readout.Scale = 0.002f;
+      readout.Size = new Vector2(100.0f, 30.0f);
+      readout.Position = new Vector3(0.0f, 0.0f, 0.1f);
+
+      readout.transform.localRotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
+
+      UpdateLine();
     }
 
-    // TODO: None of this code is currently right
     public void Disable(IHandController ctl) {
       ctl.Events.TriggerPressed -= Advance;
       ctl.OnFixedUpdate -= FixedUpdate;
 
       GameObject.Destroy(lineObj);
+      GameObject.Destroy(readoutObj);
+    }
+
+    void UpdateLine() {
+      switch (state) {
+        case 0:
+          line.enabled = false;
+          break;
+        case 1:
+          line.enabled = true;
+          line.SetPosition(0, pos1);
+          line.SetPosition(1, TrackPos);
+          break;
+        case 2:
+          line.enabled = true;
+          line.SetPosition(0, pos1);
+          line.SetPosition(1, pos2);
+          break;
+      }
+
+      UpdateReadout(false);
+    }
+
+    void UpdateReadout(bool dynamic) {
+      if (dynamic && state != 1) return; // No point repeatedly setting the text to a static value
+
+      switch (state) {
+        case 0:
+          readout.Text = "";
+          break;
+        case 1:
+          readout.Text = $"{(TrackPos - pos1).magnitude:N4}";
+          break;
+        case 2:
+          readout.Text = $"{(pos2 - pos1).magnitude:N4}";
+          break;
+      }
     }
 
     void Advance(object sender, ControllerInteractionEventArgs e) {
       switch (state) {
-        case 0:
-          line.SetPosition(0, hand.gameObject.transform.position);
-          line.enabled = true;
-          break;
-        case 1:
-          line.SetPosition(1, hand.gameObject.transform.position);
-          break;
-        case 2:
-          line.enabled = false;
-          break;
+        case 0: pos1 = TrackPos; break;
+        case 1: pos2 = TrackPos; break;
       }
 
       state = (state + 1) % 3;
+      UpdateLine();
     }
 
     void FixedUpdate() {
       switch (state) {
         case 1:
-          line.SetPosition(1, hand.gameObject.transform.position);
+          line.SetPosition(1, TrackPos);
           break;
       }
+
+      UpdateReadout(true);
     }
   }
 }

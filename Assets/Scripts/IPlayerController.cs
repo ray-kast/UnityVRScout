@@ -21,5 +21,6 @@ namespace VRScout {
     GameObject SnapshotCam { get; }
     GameObject CamViewfinder { get; }
     GameObject MeasureLine { get; }
+    GameObject MeasureReadout { get; }
   }
 }
