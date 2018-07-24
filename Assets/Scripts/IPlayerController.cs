@@ -13,6 +13,8 @@ namespace VRScout {
     float MaxFlySpeed { get; }
     float FlyDeadband { get; }
     float FlySensitivity { get; }
+    float MeasureConvertRatio { get; }
+    HandFuncs.MeasureUnits MeasureUnits { get; }
     bool OrientLockY { get; }
     LayerMask PointerIgnoreLayers { get; }
     VRTK_HeightAdjustTeleport Teleport { get; }

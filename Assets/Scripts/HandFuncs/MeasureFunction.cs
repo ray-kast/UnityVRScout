@@ -6,6 +6,11 @@ using VRTK;
 using TooltipButtons = VRTK.VRTK_ControllerTooltips.TooltipButtons;
 
 namespace VRScout.HandFuncs {
+  public enum MeasureUnits {
+    Imperial,
+    Metric,
+  }
+
   public class MeasureFunction : IHandFunction {
     static readonly Dictionary<TooltipButtons, string> tooltips = new Dictionary<TooltipButtons, string> {
       [TooltipButtons.TriggerTooltip] = "Select",
@@ -75,19 +80,42 @@ namespace VRScout.HandFuncs {
       UpdateReadout(false);
     }
 
+    void UpdateReadout(float dist) {
+      dist *= hand.Player.MeasureConvertRatio;
+
+      string str = null;
+
+      switch (hand.Player.MeasureUnits) {
+        case MeasureUnits.Imperial: {
+            dist *= 1.0f / 0.0254f;
+
+            str = $@"{dist % 12.0f:N2}""";
+
+            var feet = Mathf.Floor(dist / 12.0f);
+
+            if (feet > 1e-5f) str = $"{Mathf.Floor(dist / 12.0f):N0}' {str}";
+
+            break;
+          }
+        case MeasureUnits.Metric: {
+            dist *= 1000.0f;
+
+            str = $"{dist:N0} mm";
+
+            break;
+          }
+      }
+
+      readout.Text = str;
+    }
+
     void UpdateReadout(bool dynamic) {
       if (dynamic && state != 1) return; // No point repeatedly setting the text to a static value
 
       switch (state) {
-        case 0:
-          readout.Text = "";
-          break;
-        case 1:
-          readout.Text = $"{(TrackPos - pos1).magnitude:N4}";
-          break;
-        case 2:
-          readout.Text = $"{(pos2 - pos1).magnitude:N4}";
-          break;
+        case 0: readout.Text = ""; break;
+        case 1: UpdateReadout((TrackPos - pos1).magnitude); break;
+        case 2: UpdateReadout((pos2 - pos1).magnitude); break;
       }
     }
 

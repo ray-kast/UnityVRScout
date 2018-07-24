@@ -15,6 +15,10 @@ namespace VRScout {
     public float flyDeadband = 0.1f;
     public float flySensitivity = 0.75f;
 
+    [Tooltip("The ratio between one Unity unit and one meter")]
+    public float measureConvertRatio = 1.0f;
+    public HandFuncs.MeasureUnits measureUnits = HandFuncs.MeasureUnits.Metric;
+
     [Tooltip("Lock the Y axis for rotating the world with the grip buttons.\nWARNING: Disable at your own risk!")]
     public bool orientLockY = true;
     public LayerMask pointerIgnoreLayers;
@@ -33,6 +37,8 @@ namespace VRScout {
     float IPlayerController.MaxFlySpeed => maxFlySpeed;
     float IPlayerController.FlyDeadband => flyDeadband;
     float IPlayerController.FlySensitivity => flySensitivity;
+    float IPlayerController.MeasureConvertRatio => measureConvertRatio;
+    HandFuncs.MeasureUnits IPlayerController.MeasureUnits => measureUnits;
     bool IPlayerController.OrientLockY => orientLockY;
     LayerMask IPlayerController.PointerIgnoreLayers => pointerIgnoreLayers;
     VRTK_HeightAdjustTeleport IPlayerController.Teleport => teleport;

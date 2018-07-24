@@ -5720,6 +5720,8 @@ MonoBehaviour:
   maxFlySpeed: 10
   flyDeadband: 0.1
   flySensitivity: 0.75
+  measureConvertRatio: 1
+  measureUnits: 0
   orientLockY: 1
   pointerIgnoreLayers:
     serializedVersion: 2
