@@ -3,15 +3,8 @@ using UnityEngine;
 using UI = UnityEngine.UI;
 
 namespace VRScout.HandFuncs {
-  public class ModeMenuItem : MonoBehaviour {
-    public enum ModeType {
-      Primary,
-      Grip,
-    }
-
-    public int index;
-    public ModeType type;
-
+  // TODO: This and ModeMenuItem are slightly redundant
+  public class MeasureReadout : MonoBehaviour {
     public Canvas canvas;
     public UI.Image background;
     public UI.Text text;
@@ -24,13 +17,12 @@ namespace VRScout.HandFuncs {
     }
 
     public float Scale {
-      set { transform.localScale = Vector3.one * value; }
+      set { transform.localScale = new Vector3(value, value, 1.0f); }
     }
 
     public Vector2 Size {
       get { return canvas.GetComponent<RectTransform>().rect.size; }
       set {
-        GetComponent<BoxCollider>().size = new Vector3(value.x, value.y, 0.01f / transform.localScale.z);
         canvas.GetComponent<RectTransform>().sizeDelta = value;
         background.GetComponent<RectTransform>().sizeDelta = value;
         text.GetComponent<RectTransform>().sizeDelta = value;
@@ -40,10 +32,6 @@ namespace VRScout.HandFuncs {
     public string Text {
       get { return text.text; }
       set { text.text = value; }
-    }
-
-    public void SetSelected() {
-      background.color = new Color(0.1f, 0.5f, 1.0f, 1.0f);
     }
   }
 }

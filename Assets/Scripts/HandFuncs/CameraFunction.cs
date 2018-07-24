@@ -15,12 +15,12 @@ namespace VRScout.HandFuncs {
       [TooltipButtons.TriggerTooltip] = "Record",
     };
 
-    const float MIN_FOCAL_LEN = 16.0f;
-    const float MAX_FOCAL_LEN = 72.0f;
-    const float LEN_ADJUST_MAX_SPEED = 10.0f;
+    const float MIN_FOCAL_LEN = 10.0f;
+    const float MAX_FOCAL_LEN = 200.0f;
+    const float LEN_ADJUST_MAX_SPEED = 30.0f;
     const float LEN_ADJUST_DEADBAND = 0.1f;
 
-    float focalLenSpeed, focalLen;
+    float focalLenSpeed, focalLen = MIN_FOCAL_LEN;
     IPlayerController player;
     Camera cam;
     RenderTexture viewfinderTex;
@@ -80,7 +80,6 @@ namespace VRScout.HandFuncs {
       }
 
       focalLenSpeed = 0.0f;
-      focalLen = MIN_FOCAL_LEN;
     }
 
     public void Disable(IHandController ctl) {

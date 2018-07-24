@@ -17,6 +17,7 @@ namespace VRScout {
       new SimpleHandMode("Teleport", new[] { typeof(TeleportFunction) }),
       new SimpleHandMode("Pointer", new[] { typeof(PointFunction) }),
       new SimpleHandMode("Camera", new[] { typeof(CameraFunction) }),
+      new SimpleHandMode("Measure", new[] { typeof(MeasureFunction) }),
     };
 
     static readonly List<SimpleHandMode> gripModes = new List<SimpleHandMode> {
@@ -56,12 +57,12 @@ namespace VRScout {
     public PlayerController player;
 
     void Awake() {
-      // TODO: Is it worth it to try instantiating these at runtime with reflection?
       // NB: This CANNOT be static! (Each function can operate on exactly one controller)
       funcs = new Dictionary<Type, IHandFunction> {
         [typeof(CameraFunction)] = new CameraFunction(),
         [typeof(FlyFunction)] = new FlyFunction(),
         [typeof(GrabFunction)] = new GrabFunction(),
+        [typeof(MeasureFunction)] = new MeasureFunction(),
         [typeof(ModeControlFunction)] = new ModeControlFunction(this),
         [typeof(ModeMenuFunction)] = new ModeMenuFunction(this),
         [typeof(OrientFunction)] = new OrientFunction(),
