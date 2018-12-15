@@ -23,6 +23,6 @@ namespace VRScout {
     GameObject SnapshotCam { get; }
     GameObject CameraHud { get; }
     GameObject MeasureLine { get; }
-    GameObject MeasureReadout { get; }
+    GameObject SimpleReadout { get; }
   }
 }

@@ -11,6 +11,8 @@ namespace VRScout.HandFuncs {
       [TooltipButtons.GripTooltip] = "Move",
     };
 
+    GameObject readoutObj;
+    SimpleReadout readout;
     Vector3 lastPos, lastDoubleDiff;
     VRTK_ControllerEvents events, otherEvents;
     IPlayerController player;
@@ -33,7 +35,19 @@ namespace VRScout.HandFuncs {
       ctl.Other.Events.GripReleased += OnGrabEnd;
       ctl.OnFixedUpdate += FixedUpdate;
 
+      readoutObj = GameObject.Instantiate(ctl.Player.SimpleReadout, ctl.gameObject.transform, false);
+
+      readout = readoutObj.GetComponent<SimpleReadout>();
+
+      readout.Scale = 0.002f;
+      readout.Size = new Vector2(100.0f, 30.0f);
+      readout.Position = new Vector3(0.0f, 0.15f, -0.15f);
+
+      readout.transform.localRotation = Quaternion.Euler(65.0f, 0.0f, 0.0f);
+
       grab = false; // Reset the state to avoid weird behavior
+
+      UpdateReadout();
     }
 
     public void Disable(IHandController ctl) {
@@ -42,6 +56,22 @@ namespace VRScout.HandFuncs {
       ctl.Other.Events.GripPressed -= OnDoubleGrabStart;
       ctl.Other.Events.GripReleased -= OnGrabEnd;
       ctl.OnFixedUpdate -= FixedUpdate;
+
+      GameObject.Destroy(readoutObj);
+    }
+
+    void UpdateReadout() {
+      string str = null;
+
+      float scl = player.Controller.transform.localScale.z;
+
+      if (scl > 1) {
+        str = $"{scl:G4}:1";
+      } else {
+        str = $"1:{1 / scl:G4}";
+      }
+
+      readout.Text = str;
     }
 
     void OnGrabStart(object sender, ControllerInteractionEventArgs e) {
@@ -86,6 +116,8 @@ namespace VRScout.HandFuncs {
           lastPos = events.transform.position; // Gotta get the new position after the player moved
         }
       }
+
+      UpdateReadout();
     }
   }
 }

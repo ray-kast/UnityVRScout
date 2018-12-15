@@ -71,9 +71,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4424134673860008}
-  - component: {fileID: 114051408372819480}
+  - component: {fileID: 114523401832415470}
   m_Layer: 0
-  m_Name: MeasureReadout
+  m_Name: SimpleReadout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,20 +93,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114051408372819480
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1841674765628484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baec8ae4b89e35d49bf0e91136bf5f9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 223209296527937104}
-  background: {fileID: 114272903999426032}
-  text: {fileID: 114424080527669436}
 --- !u!114 &114272903999426032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,6 +169,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114523401832415470
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1841674765628484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff484304cd195b43bff82d235066661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 223209296527937104}
+  background: {fileID: 114272903999426032}
+  text: {fileID: 114424080527669436}
 --- !u!114 &114661936508606574
 MonoBehaviour:
   m_ObjectHideFlags: 1

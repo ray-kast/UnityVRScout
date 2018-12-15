@@ -4,7 +4,7 @@ using UI = UnityEngine.UI;
 
 namespace VRScout.HandFuncs {
   // TODO: This and ModeMenuItem are slightly redundant
-  public class MeasureReadout : MonoBehaviour {
+  public class SimpleReadout : MonoBehaviour {
     public Canvas canvas;
     public UI.Image background;
     public UI.Text text;
