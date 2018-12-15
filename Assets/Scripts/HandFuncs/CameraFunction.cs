@@ -22,16 +22,18 @@ namespace VRScout.HandFuncs {
 
     float focalLenSpeed, focalLen = MIN_FOCAL_LEN;
     IPlayerController player;
+    GameObject camObj, hudObj;
+    CameraHud hud;
     Camera cam;
     RenderTexture viewfinderTex;
-    GameObject camObject, viewfinder;
 
     public ReadOnlyDictionary<TooltipButtons, string> Tooltips => new ReadOnlyDictionary<TooltipButtons, string>(tooltips);
 
     public CameraFunction() { }
 
     public void Enable(IHandController ctl) {
-      if (cam != null) GameObject.Destroy(cam);
+      if (camObj != null) GameObject.Destroy(cam);
+      if (hudObj != null) GameObject.Destroy(hudObj);
 
       player = ctl.Player;
       ctl.Events.TouchpadAxisChanged += OnTouchpadMove;
@@ -40,9 +42,11 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed += OnRecord;
       ctl.OnFixedUpdate += FixedUpdate;
 
-      camObject = GameObject.Instantiate(ctl.Player.SnapshotCam, ctl.gameObject.transform, false);
+      camObj = GameObject.Instantiate(ctl.Player.SnapshotCam, ctl.gameObject.transform, false);
+      hudObj = GameObject.Instantiate(ctl.Player.CameraHud, ctl.gameObject.transform, false);
 
-      cam = camObject.GetComponent<Camera>();
+      cam = camObj.GetComponent<Camera>();
+      hud = hudObj.GetComponent<CameraHud>();
 
       cam.enabled = true;
 
@@ -52,34 +56,49 @@ namespace VRScout.HandFuncs {
       viewfinderTex = new RenderTexture(
         new RenderTextureDescriptor(WIDTH, HEIGHT, RenderTextureFormat.ARGB32));
 
-      viewfinder = GameObject.Instantiate(ctl.Player.CamViewfinder, ctl.gameObject.transform, false);
-
       if (!viewfinderTex.Create())
         Debug.LogError("Failed to create viewfinder render target for CameraFunction");
 
       cam.targetTexture = viewfinderTex;
 
       // TODO: Probably shouldn't hard-code these
-      camObject.transform.localRotation = Quaternion.Euler(ctl.Player.CamPitchOffset, 0.0f, 0.0f);
-      viewfinder.transform.localPosition = new Vector3(0.0f, 0.1f, 0.1f);
-      viewfinder.transform.localRotation = Quaternion.Euler(-45.0f, 0.0f, 0.0f);
+      camObj.transform.localRotation = Quaternion.Euler(ctl.Player.CamPitchOffset, 0.0f, 0.0f);
+
+      hud.CanvasScale = 0.002f;
+      hud.CanvasPos = new Vector3(0.0f, 0.0f, -0.001f);
+      hud.CanvasSize = new Vector2(100.0f, 30.0f);
+
+      hud.transform.localRotation = Quaternion.Euler(45.0f, 0.0f, 0.0f);
+
+      hud.transform.localPosition = new Vector3(0.0f, 0.0f, 0.1f) +
+        hud.transform.localRotation * new Vector3(0.0f, 0.1f, 0.0f);
+
+      // hud.viewfinder.transform.localPosition = new Vector3(0.0f, 0.1f, 0.1f);
+      // hud.viewfinder.transform.localRotation = Quaternion.Euler(-45.0f, 0.0f, 0.0f);
 
       {
-        var scl = viewfinder.transform.localScale;
+        var scl = hud.viewfinder.transform.localScale;
 
         if (WIDTH > HEIGHT) scl.z *= (float)HEIGHT / WIDTH;
         else scl.x *= (float)WIDTH / HEIGHT;
 
-        viewfinder.transform.localScale = scl;
+        hud.viewfinder.transform.localScale = scl;
+
+        hud.canvas.transform.localPosition += new Vector3(
+          0.0f,
+          5.0f * scl.z,
+          0.0f
+        );
       }
 
       {
-        var renderer = viewfinder.GetComponent<MeshRenderer>();
-        var mat = renderer.material;
+        var mat = hud.viewfinder.material;
         mat.SetTexture("_MainTex", viewfinderTex);
       }
 
       focalLenSpeed = 0.0f;
+
+      UpdateFocalLen();
     }
 
     public void Disable(IHandController ctl) {
@@ -89,9 +108,9 @@ namespace VRScout.HandFuncs {
       ctl.Events.TriggerPressed -= OnRecord;
       ctl.OnFixedUpdate -= FixedUpdate;
 
-      GameObject.Destroy(camObject);
+      GameObject.Destroy(camObj);
+      GameObject.Destroy(hudObj);
       GameObject.Destroy(viewfinderTex);
-      GameObject.Destroy(viewfinder);
     }
 
     void OnTouchpadMove(object sender, ControllerInteractionEventArgs e) {
@@ -147,9 +166,17 @@ namespace VRScout.HandFuncs {
       }
     }
 
+    // TODO: fix the focal length calculations to make sure this is accurate
+    void UpdateFocalLen() {
+      hud.FocalLen = $"{Mathf.Round(focalLen)} mm";
+    }
+
     void FixedUpdate() {
+      const float ASPECT = 3.0f / 4.0f;
+
       focalLen = Mathf.Clamp(focalLen + focalLenSpeed * LEN_ADJUST_MAX_SPEED * Time.fixedDeltaTime, MIN_FOCAL_LEN, MAX_FOCAL_LEN);
-      cam.fieldOfView = 2.0f * Mathf.Rad2Deg * Mathf.Atan(0.5f * player.CamFilmSize / focalLen);
+      UpdateFocalLen();
+      cam.fieldOfView = 2.0f * Mathf.Rad2Deg * Mathf.Atan(0.5f * (player.CamFilmSize * ASPECT) / focalLen);
     }
   }
 }

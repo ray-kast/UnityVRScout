@@ -26,7 +26,7 @@ namespace VRScout {
 
     public GameObject modeMenuItem;
     public GameObject snapshotCam;
-    public GameObject camViewfinder;
+    public GameObject cameraHud;
     public GameObject measureLine;
     public GameObject measureReadout;
 
@@ -45,7 +45,7 @@ namespace VRScout {
 
     GameObject IPlayerController.ModeMenuItem => modeMenuItem;
     GameObject IPlayerController.SnapshotCam => snapshotCam;
-    GameObject IPlayerController.CamViewfinder => camViewfinder;
+    GameObject IPlayerController.CameraHud => cameraHud;
     GameObject IPlayerController.MeasureLine => measureLine;
     GameObject IPlayerController.MeasureReadout => measureReadout;
 
