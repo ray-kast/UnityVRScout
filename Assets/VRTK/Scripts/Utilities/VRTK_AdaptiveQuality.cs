@@ -14,7 +14,7 @@ namespace VRTK
     using System.Linq;
     using System.Text;
     using UnityEngine;
-    using UnityEngine.VR;
+    using UnityEngine.XR;
 
     /// <summary>
     /// Adaptive Quality dynamically changes rendering settings to maintain VR framerate while maximizing GPU utilization.
@@ -145,7 +145,7 @@ namespace VRTK
         /// </remarks>
         public static float CurrentRenderScale
         {
-            get { return VRSettings.renderScale * VRSettings.renderViewportScale; }
+            get { return XRSettings.eyeTextureResolutionScale * XRSettings.renderViewportScale; }
         }
 
         /// <summary>
@@ -210,8 +210,8 @@ namespace VRTK
         /// </returns>
         public static Vector2 RenderTargetResolutionForRenderScale(float renderScale)
         {
-            return new Vector2((int)(VRSettings.eyeTextureWidth / VRSettings.renderScale * renderScale),
-                               (int)(VRSettings.eyeTextureHeight / VRSettings.renderScale * renderScale));
+            return new Vector2((int)(XRSettings.eyeTextureWidth / XRSettings.eyeTextureResolutionScale * renderScale),
+                               (int)(XRSettings.eyeTextureHeight / XRSettings.eyeTextureResolutionScale * renderScale));
         }
 
         /// <summary>
@@ -223,15 +223,15 @@ namespace VRTK
         /// </returns>
         public float BiggestAllowedMaximumRenderScale()
         {
-            if (VRSettings.eyeTextureWidth == 0 || VRSettings.eyeTextureHeight == 0)
+            if (XRSettings.eyeTextureWidth == 0 || XRSettings.eyeTextureHeight == 0)
             {
                 return maximumRenderScale;
             }
 
-            float maximumHorizontalRenderScale = maximumRenderTargetDimension * VRSettings.renderScale
-                                                 / VRSettings.eyeTextureWidth;
-            float maximumVerticalRenderScale = maximumRenderTargetDimension * VRSettings.renderScale
-                                               / VRSettings.eyeTextureHeight;
+            float maximumHorizontalRenderScale = maximumRenderTargetDimension * XRSettings.eyeTextureResolutionScale
+                                                 / XRSettings.eyeTextureWidth;
+            float maximumVerticalRenderScale = maximumRenderTargetDimension * XRSettings.eyeTextureResolutionScale
+                                               / XRSettings.eyeTextureHeight;
             return Mathf.Min(maximumHorizontalRenderScale, maximumVerticalRenderScale);
         }
 
@@ -300,8 +300,8 @@ namespace VRTK
             Camera.onPreCull += OnCameraPreCull;
 
             hmdDisplayIsOnDesktop = VRTK_SDK_Bridge.IsDisplayOnDesktop();
-            singleFrameDurationInMilliseconds = VRDevice.refreshRate > 0.0f
-                                                ? 1000.0f / VRDevice.refreshRate
+            singleFrameDurationInMilliseconds = XRDevice.refreshRate > 0.0f
+                                                ? 1000.0f / XRDevice.refreshRate
                                                 : DefaultFrameDurationInMilliseconds;
 
             HandleCommandLineArguments();
@@ -644,13 +644,13 @@ namespace VRTK
 
         private static void SetRenderScale(float renderScale, float renderViewportScale)
         {
-            if (Mathf.Abs(VRSettings.renderScale - renderScale) > float.Epsilon)
+            if (Mathf.Abs(XRSettings.eyeTextureResolutionScale - renderScale) > float.Epsilon)
             {
-                VRSettings.renderScale = renderScale;
+                XRSettings.eyeTextureResolutionScale = renderScale;
             }
-            if (Mathf.Abs(VRSettings.renderViewportScale - renderViewportScale) > float.Epsilon)
+            if (Mathf.Abs(XRSettings.renderViewportScale - renderViewportScale) > float.Epsilon)
             {
-                VRSettings.renderViewportScale = renderViewportScale;
+                XRSettings.renderViewportScale = renderViewportScale;
             }
         }
 
