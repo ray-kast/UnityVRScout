@@ -10,7 +10,7 @@ namespace VRTK
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using UnityEngine.XR;
+    using UnityEngine.VR;
 
     /// <summary>
     /// The Shared Methods script is a collection of reusable static methods that are used across a range of different scripts.
@@ -409,7 +409,7 @@ namespace VRTK
         {
 #if UNITY_5_6_OR_NEWER
             float gpuTimeLastFrame;
-            if (XRStats.TryGetGPUTimeLastFrame(out gpuTimeLastFrame))
+            if (VRStats.TryGetGPUTimeLastFrame(out gpuTimeLastFrame))
             {
                 return gpuTimeLastFrame;
             }

@@ -14,7 +14,7 @@ namespace VRTK
     using System.Linq;
     using System.Text;
     using UnityEngine;
-    using UnityEngine.XR;
+    using UnityEngine.VR;
 
     /// <summary>
     /// Adaptive Quality dynamically changes rendering settings to maintain VR framerate while maximizing GPU utilization.
@@ -42,7 +42,7 @@ namespace VRTK
     /// </list>
     /// <para />
     /// Some shaders, especially Image Effects, need to be modified to work with the changed render scale. To fix them
-    /// pass `1.0f / XRSettings.renderViewportScale` into the shader and scale all incoming UV values with it in the vertex
+    /// pass `1.0f / VRSettings.renderViewportScale` into the shader and scale all incoming UV values with it in the vertex
     /// program. Do this by using `Material.SetFloat` to set the value in the script that configures the shader.
     /// <para />
     /// In more detail:
@@ -50,7 +50,7 @@ namespace VRTK
     /// <item> <description>In the `.shader` file: Add a new runtime-set property value `float _InverseOfRenderViewportScale`
     /// and add `vertexInput.texcoord *= _InverseOfRenderViewportScale` to the start of the vertex program</description> </item>
     /// <item> <description>In the `.cs` file: Before using the material (eg. `Graphics.Blit`) add
-    /// `material.SetFloat("_InverseOfRenderViewportScale", 1.0f / XRSettings.renderViewportScale)`</description> </item>
+    /// `material.SetFloat("_InverseOfRenderViewportScale", 1.0f / VRSettings.renderViewportScale)`</description> </item>
     /// </list>
     /// </remarks>
     /// <example>
@@ -67,7 +67,7 @@ namespace VRTK
         [Tooltip("Toggles whether to show the debug overlay.\n\n"
                  + "Each square represents a different level on the quality scale. Levels increase from left to right,"
                  + " the first green box that is lit above represents the recommended render target resolution provided by the"
-                 + " current `XRDevice`, the box that is lit below in cyan represents the current resolution and the filled box"
+                 + " current `VRDevice`, the box that is lit below in cyan represents the current resolution and the filled box"
                  + " represents the current viewport scale. The yellow boxes represent resolutions below the recommended render target resolution.\n"
                  + "The currently lit box becomes red whenever the user is likely seeing reprojection in the HMD since the"
                  + " application isn't maintaining VR framerate. If lit, the box all the way on the left is almost always lit"
@@ -100,7 +100,7 @@ namespace VRTK
         public int msaaLevel = 4;
 
         [Tooltip("Toggles whether the render viewport scale is dynamically adjusted to maintain VR framerate.\n\n"
-                 + "If unchecked, the renderer will render at the recommended resolution provided by the current `XRDevice`.")]
+                 + "If unchecked, the renderer will render at the recommended resolution provided by the current `VRDevice`.")]
         public bool scaleRenderViewport = true;
         [Tooltip("The minimum allowed render scale.")]
         [Range(0.01f, 5)]
@@ -133,7 +133,7 @@ namespace VRTK
         /// </summary>
         /// <remarks>
         /// The elements of this collection are to be interpreted as modifiers to the recommended render target
-        /// resolution provided by the current `XRDevice`.
+        /// resolution provided by the current `VRDevice`.
         /// </remarks>
         public readonly ReadOnlyCollection<float> renderScales;
 
@@ -141,15 +141,15 @@ namespace VRTK
         /// The current render scale.
         /// </summary>
         /// <remarks>
-        /// A render scale of `1.0` represents the recommended render target resolution provided by the current `XRDevice`.
+        /// A render scale of `1.0` represents the recommended render target resolution provided by the current `VRDevice`.
         /// </remarks>
         public static float CurrentRenderScale
         {
-            get { return XRSettings.eyeTextureResolutionScale * XRSettings.renderViewportScale; }
+            get { return VRSettings.renderScale * VRSettings.renderViewportScale; }
         }
 
         /// <summary>
-        /// The recommended render target resolution provided by the current `XRDevice`.
+        /// The recommended render target resolution provided by the current `VRDevice`.
         /// </summary>
         public Vector2 defaultRenderTargetResolution
         {
@@ -169,7 +169,7 @@ namespace VRTK
         #region Private fields
 
         /// <summary>
-        /// The frame duration in milliseconds to fallback to if the current `XRDevice` specifies no refresh rate.
+        /// The frame duration in milliseconds to fallback to if the current `VRDevice` specifies no refresh rate.
         /// </summary>
         private const float DefaultFrameDurationInMilliseconds = 1000f / 90f;
 
@@ -210,8 +210,8 @@ namespace VRTK
         /// </returns>
         public static Vector2 RenderTargetResolutionForRenderScale(float renderScale)
         {
-            return new Vector2((int)(XRSettings.eyeTextureWidth / XRSettings.eyeTextureResolutionScale * renderScale),
-                               (int)(XRSettings.eyeTextureHeight / XRSettings.eyeTextureResolutionScale * renderScale));
+            return new Vector2((int)(VRSettings.eyeTextureWidth / VRSettings.renderScale * renderScale),
+                               (int)(VRSettings.eyeTextureHeight / VRSettings.renderScale * renderScale));
         }
 
         /// <summary>
@@ -223,15 +223,15 @@ namespace VRTK
         /// </returns>
         public float BiggestAllowedMaximumRenderScale()
         {
-            if (XRSettings.eyeTextureWidth == 0 || XRSettings.eyeTextureHeight == 0)
+            if (VRSettings.eyeTextureWidth == 0 || VRSettings.eyeTextureHeight == 0)
             {
                 return maximumRenderScale;
             }
 
-            float maximumHorizontalRenderScale = maximumRenderTargetDimension * XRSettings.eyeTextureResolutionScale
-                                                 / XRSettings.eyeTextureWidth;
-            float maximumVerticalRenderScale = maximumRenderTargetDimension * XRSettings.eyeTextureResolutionScale
-                                               / XRSettings.eyeTextureHeight;
+            float maximumHorizontalRenderScale = maximumRenderTargetDimension * VRSettings.renderScale
+                                                 / VRSettings.eyeTextureWidth;
+            float maximumVerticalRenderScale = maximumRenderTargetDimension * VRSettings.renderScale
+                                               / VRSettings.eyeTextureHeight;
             return Mathf.Min(maximumHorizontalRenderScale, maximumVerticalRenderScale);
         }
 
@@ -300,8 +300,8 @@ namespace VRTK
             Camera.onPreCull += OnCameraPreCull;
 
             hmdDisplayIsOnDesktop = VRTK_SDK_Bridge.IsDisplayOnDesktop();
-            singleFrameDurationInMilliseconds = XRDevice.refreshRate > 0.0f
-                                                ? 1000.0f / XRDevice.refreshRate
+            singleFrameDurationInMilliseconds = VRDevice.refreshRate > 0.0f
+                                                ? 1000.0f / VRDevice.refreshRate
                                                 : DefaultFrameDurationInMilliseconds;
 
             HandleCommandLineArguments();
@@ -644,13 +644,13 @@ namespace VRTK
 
         private static void SetRenderScale(float renderScale, float renderViewportScale)
         {
-            if (Mathf.Abs(XRSettings.eyeTextureResolutionScale - renderScale) > float.Epsilon)
+            if (Mathf.Abs(VRSettings.renderScale - renderScale) > float.Epsilon)
             {
-                XRSettings.eyeTextureResolutionScale = renderScale;
+                VRSettings.renderScale = renderScale;
             }
-            if (Mathf.Abs(XRSettings.renderViewportScale - renderViewportScale) > float.Epsilon)
+            if (Mathf.Abs(VRSettings.renderViewportScale - renderViewportScale) > float.Epsilon)
             {
-                XRSettings.renderViewportScale = renderViewportScale;
+                VRSettings.renderViewportScale = renderViewportScale;
             }
         }
 
