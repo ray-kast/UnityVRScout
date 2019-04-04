@@ -593,7 +593,7 @@ namespace VRTK
 
 #if UNITY_EDITOR
             //call AutoManageScriptingDefineSymbolsAndManageVRSettings when the currently active scene changes
-            EditorApplication.hierarchyChanged += AutoManageScriptingDefineSymbolsAndManageVRSettings;
+            EditorApplication.hierarchyWindowChanged += AutoManageScriptingDefineSymbolsAndManageVRSettings;
 #endif
         }
 

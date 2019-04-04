@@ -19,7 +19,7 @@ namespace VRScout.HandFuncs {
     IHandController hand;
     GameObject lineObj, readoutObj;
     LineRenderer line;
-    MeasureReadout readout;
+    SimpleReadout readout;
     Vector3 pos1, pos2;
     int state = 0;
 
@@ -38,10 +38,10 @@ namespace VRScout.HandFuncs {
       ctl.OnFixedUpdate += FixedUpdate;
 
       lineObj = GameObject.Instantiate(ctl.Player.MeasureLine, ctl.gameObject.transform, false);
-      readoutObj = GameObject.Instantiate(ctl.Player.MeasureReadout, ctl.gameObject.transform, false);
+      readoutObj = GameObject.Instantiate(ctl.Player.SimpleReadout, ctl.gameObject.transform, false);
 
       line = lineObj.GetComponent<LineRenderer>();
-      readout = readoutObj.GetComponent<MeasureReadout>();
+      readout = readoutObj.GetComponent<SimpleReadout>();
 
       readout.Scale = 0.002f;
       readout.Size = new Vector2(100.0f, 30.0f);

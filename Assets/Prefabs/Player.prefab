@@ -5731,11 +5731,10 @@ MonoBehaviour:
     type: 2}
   snapshotCam: {fileID: 1328618777368730, guid: 2063b2c3dba289c4183db0d3384bc7ae,
     type: 2}
-  camViewfinder: {fileID: 1056192479914066, guid: 62d33769c00364d4ebf11ff0b82680c6,
-    type: 2}
+  cameraHud: {fileID: 1419871019090724, guid: 4afb09e6c8bda5a4e8e48d5781be6a9d, type: 2}
   measureLine: {fileID: 1889899813507534, guid: 02476fbd1cf2e54489014ba8d029e46e,
     type: 2}
-  measureReadout: {fileID: 1841674765628484, guid: 42f66c2b68d86e34abf81bb25ab5942b,
+  simpleReadout: {fileID: 1841674765628484, guid: 42f66c2b68d86e34abf81bb25ab5942b,
     type: 2}
 --- !u!114 &114539271027096408
 MonoBehaviour:
